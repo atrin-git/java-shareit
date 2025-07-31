@@ -1,12 +1,68 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemNewDto;
 
-/**
- * TODO Sprint add-controllers.
- */
+import java.util.List;
+
+@Slf4j
 @RestController
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequestMapping("/items")
 public class ItemController {
+    private final ItemService itemService;
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDto> getAll(@NotNull @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info("Получение списка вещей пользователя с id = {}", userId);
+        return itemService.getAll(userId);
+    }
+
+    @GetMapping("/{itemId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto get(@NotNull @PathVariable long itemId) {
+        log.info("Получение данных о вещи с id = {}", itemId);
+        return itemService.get(itemId);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId,
+                          @NotNull @RequestBody ItemNewDto item) {
+        log.info("Получение запрос на создание новой вещи \"{}\"", item.getName());
+        return itemService.create(userId, item);
+    }
+
+    @PatchMapping("/{itemId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto edit(@NotNull @RequestHeader("X-Sharer-User-Id") long userId,
+                        @NotNull @PathVariable long itemId,
+                        @NotNull @RequestBody ItemNewDto item) {
+        log.info("Получение запрос на редактирование вещи c name = {}", itemId);
+        return itemService.edit(userId, itemId, item);
+    }
+
+    @DeleteMapping("/{itemId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@NotNull @RequestHeader("X-Sharer-User-Id") long userId,
+                       @NotNull @RequestBody long itemId) {
+        log.info("Получение запрос на удаление вещи c id = {}", itemId);
+        itemService.delete(userId, itemId);
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDto> search(@NotNull @RequestHeader("X-Sharer-User-Id") long userId,
+                                @RequestParam("text") String searchString) {
+        log.info("Получен запрос от пользователя {} на поиск вещи: {}", userId, searchString);
+        return itemService.search(searchString);
+    }
+
 }
