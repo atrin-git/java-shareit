@@ -11,12 +11,10 @@ import ru.practicum.shareit.user.dto.UserNewDto;
 import ru.practicum.shareit.user.dto.UserValidator;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.utils.advices.exceptions.DuplicateException;
-import ru.practicum.shareit.utils.advices.exceptions.InternalServerError;
 import ru.practicum.shareit.utils.advices.exceptions.NotFoundException;
 
-import java.util.Optional;
-
-import static ru.practicum.shareit.utils.enums.Errors.*;
+import static ru.practicum.shareit.utils.enums.Errors.USER_DUPLICATE_EMAIL;
+import static ru.practicum.shareit.utils.enums.Errors.USER_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -46,10 +44,7 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.create(user)
                 .map(UserMapper::mapToUserDto)
-                .orElseThrow(() -> {
-                    log.error("Не удалось создать нового пользователя");
-                    return new InternalServerError(USER_CREATION_ERROR);
-                });
+                .orElseThrow();
     }
 
     @Override
@@ -60,17 +55,19 @@ public class UserServiceImpl implements UserService {
         UserValidator.checkUpdateUser(user);
         final User existedUser = UserMapper.mapToUser(get(id));
 
-        Optional<Long> idPresent = userRepository.getId(user.getEmail());
-        if (idPresent.isPresent() && !idPresent.get().equals(id)) {
-            log.error("Нарушена уникальность email = {}, у пользователя с id = {} такой же", user.getEmail(), idPresent.get());
-            throw new DuplicateException(USER_DUPLICATE_EMAIL);
-        }
+        userRepository.getId(user.getEmail())
+                .ifPresent(existedId -> {
+                    if (!existedId.equals(id)) {
+                        log.error("Нарушена уникальность email = {}, у пользователя с id = {} такой же", updateUser.getEmail(), existedId);
+                        throw new DuplicateException(USER_DUPLICATE_EMAIL);
+                    }
+                });
 
         user = UserMapper.mapUpdateUser(user, existedUser);
 
         return userRepository.edit(user)
                 .map(UserMapper::mapToUserDto)
-                .orElseThrow(() -> new InternalServerError(USER_UPDATE_ERROR));
+                .orElseThrow();
     }
 
     @Override

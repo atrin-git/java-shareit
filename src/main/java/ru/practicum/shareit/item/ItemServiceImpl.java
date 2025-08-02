@@ -10,14 +10,14 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemNewDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.utils.advices.exceptions.InternalServerError;
+import ru.practicum.shareit.utils.advices.exceptions.ForbiddenException;
 import ru.practicum.shareit.utils.advices.exceptions.NotFoundException;
-import ru.practicum.shareit.utils.advices.exceptions.ValidationException;
 
 import java.util.List;
 
 import static ru.practicum.shareit.item.dto.ItemValidator.checkNewItem;
-import static ru.practicum.shareit.utils.enums.Errors.*;
+import static ru.practicum.shareit.utils.enums.Errors.ITEM_NOT_FOUND;
+import static ru.practicum.shareit.utils.enums.Errors.ITEM_OF_ANOTHER_USER;
 
 @Slf4j
 @Service
@@ -51,10 +51,7 @@ public class ItemServiceImpl implements ItemService {
 
         return itemRepository.create(item)
                 .map(ItemMapper::mapToItemDto)
-                .orElseThrow(() -> {
-                    log.error("Не удалось создать новую вещь");
-                    return new InternalServerError(ITEM_CREATION_ERROR);
-                });
+                .orElseThrow();
     }
 
     @Override
@@ -66,14 +63,14 @@ public class ItemServiceImpl implements ItemService {
 
         if (!itemExists.getOwnerId().equals(userId)) {
             log.error("Ранее созданная вещь в БД принадлежит пользователю с id = {}, а передан id = {}", itemExists.getOwnerId(), userId);
-            throw new ValidationException(ITEM_OF_ANOTHER_USER);
+            throw new ForbiddenException(ITEM_OF_ANOTHER_USER);
         }
 
         item = ItemMapper.mapUpdateItem(item, itemExists);
 
         return itemRepository.edit(item)
                 .map(ItemMapper::mapToItemDto)
-                .orElseThrow(() -> new InternalServerError(ITEM_UPDATE_ERROR));
+                .orElseThrow();
     }
 
     @Override

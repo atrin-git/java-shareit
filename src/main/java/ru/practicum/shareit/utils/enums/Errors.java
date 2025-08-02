@@ -10,13 +10,10 @@ public class Errors {
     public static final String USER_NOT_FOUND = "Пользователь не найден";
     public static final String USER_DUPLICATE_EMAIL = "Пользователь с этим email уже существует";
     public static final String USER_EMAIL_ERROR = "Поле email заполнено некорректно";
-    public static final String USER_CREATION_ERROR = "Пользователь не был создан";
-    public static final String USER_UPDATE_ERROR = "Не удалось выполнить обновление данных пользователя";
 
-    public static final String ITEM_CREATION_ERROR = "Не удалось создать вещь";
-    public static final String ITEM_UPDATE_ERROR = "Не удалось выполнить обновление данных для вещи";
     public static final String ITEM_NOT_FOUND = "Вещь не найдена";
     public static final String ITEM_NAME_ERROR = "Поле name заполнено некорректно";
+    public static final String ITEM_DUPLICATE_NAME = "Вещь с таким названием уже была добавлена ранее";
     public static final String ITEM_DESCRIPTION_ERROR = "Поле description заполнено некорректно";
     public static final String ITEM_AVAILABLE_ERROR = "Поле available заполнено некорректно";
     public static final String ITEM_NO_USER = "Поле userId заполнено некорректно";

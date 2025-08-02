@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.utils.advices.exceptions.DuplicateException;
-import ru.practicum.shareit.utils.advices.exceptions.InternalServerError;
+import ru.practicum.shareit.utils.advices.exceptions.ForbiddenException;
 import ru.practicum.shareit.utils.advices.exceptions.NotFoundException;
 import ru.practicum.shareit.utils.advices.exceptions.ValidationException;
 
@@ -30,8 +30,8 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorTemplate getInternalServerError(final InternalServerError e) {
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorTemplate getForbiddenException(final ForbiddenException e) {
         return new ErrorTemplate(e.getMessage());
     }
 }

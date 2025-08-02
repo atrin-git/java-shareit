@@ -11,6 +11,8 @@ import ru.practicum.shareit.item.dto.ItemNewDto;
 
 import java.util.List;
 
+import static ru.practicum.shareit.utils.enums.RequestParams.X_UserId;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -20,7 +22,7 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemDto> getAll(@NotNull @RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemDto> getAll(@NotNull @RequestHeader(X_UserId) long userId) {
         log.info("Получение списка вещей пользователя с id = {}", userId);
         return itemService.getAll(userId);
     }
@@ -34,7 +36,7 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ItemDto create(@RequestHeader(X_UserId) long userId,
                           @NotNull @RequestBody ItemNewDto item) {
         log.info("Получение запрос на создание новой вещи \"{}\"", item.getName());
         return itemService.create(userId, item);
@@ -42,7 +44,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto edit(@NotNull @RequestHeader("X-Sharer-User-Id") long userId,
+    public ItemDto edit(@NotNull @RequestHeader(X_UserId) long userId,
                         @NotNull @PathVariable long itemId,
                         @NotNull @RequestBody ItemNewDto item) {
         log.info("Получение запрос на редактирование вещи c name = {}", itemId);
@@ -51,7 +53,7 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@NotNull @RequestHeader("X-Sharer-User-Id") long userId,
+    public void delete(@NotNull @RequestHeader(X_UserId) long userId,
                        @NotNull @RequestBody long itemId) {
         log.info("Получение запрос на удаление вещи c id = {}", itemId);
         itemService.delete(userId, itemId);
@@ -59,7 +61,7 @@ public class ItemController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemDto> search(@NotNull @RequestHeader("X-Sharer-User-Id") long userId,
+    public List<ItemDto> search(@NotNull @RequestHeader(X_UserId) long userId,
                                 @RequestParam("text") String searchString) {
         log.info("Получен запрос от пользователя {} на поиск вещи: {}", userId, searchString);
         return itemService.search(searchString);

@@ -1,11 +1,9 @@
 package ru.practicum.shareit.utils.advices;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 public class ErrorTemplate {
     private String message;
