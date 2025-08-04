@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestParams {
-    public static final String X_UserId = "X-Sharer-User-Id";
+    public static final String X_USER_ID = "X-Sharer-User-Id";
 }
