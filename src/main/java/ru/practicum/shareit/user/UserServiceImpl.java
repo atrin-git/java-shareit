@@ -1,79 +1,64 @@
 package ru.practicum.shareit.user;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.dto.UserNewDto;
 import ru.practicum.shareit.user.dto.UserValidator;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.utils.advices.exceptions.DuplicateException;
-import ru.practicum.shareit.utils.advices.exceptions.NotFoundException;
+import ru.practicum.shareit.utils.beans.BaseService;
 
 import static ru.practicum.shareit.utils.enums.Errors.USER_DUPLICATE_EMAIL;
-import static ru.practicum.shareit.utils.enums.Errors.USER_NOT_FOUND;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
-    public UserDto get(long userId) {
-        return userRepository.get(userId)
-                .map(UserMapper::mapToUserDto)
-                .orElseThrow(() -> {
-                    log.warn("Пользователь с id = {} не найден", userId);
-                    return new NotFoundException(USER_NOT_FOUND);
-                });
+    public UserDto get(Long userId) {
+        final User user = getRawUser(userId);
+        return UserDto.from(user);
     }
 
     @Override
     public UserDto create(UserNewDto newUser) {
-        final User user = UserMapper.mapToUser(newUser);
+        final User user = User.from(newUser);
         UserValidator.checkNewUser(user);
 
-        if (userRepository.getId(user.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             log.warn("Пользователь с email = {} уже был создан ранее", newUser.getEmail());
             throw new DuplicateException(USER_DUPLICATE_EMAIL);
         }
 
-        return userRepository.create(user)
-                .map(UserMapper::mapToUserDto)
-                .orElseThrow();
+        userRepository.save(user);
+
+        return UserDto.from(user);
     }
 
     @Override
-    public UserDto edit(long id, UserNewDto updateUser) {
-        User user = UserMapper.mapToUser(updateUser);
+    public UserDto edit(Long id, UserNewDto updateUser) {
+        User user = User.from(updateUser);
         user.setId(id);
 
         UserValidator.checkUpdateUser(user);
-        final User existedUser = UserMapper.mapToUser(get(id));
+        final User existedUser = getRawUser(id);
 
-        userRepository.getId(user.getEmail())
-                .ifPresent(existedId -> {
-                    if (!existedId.equals(id)) {
-                        log.error("Нарушена уникальность email = {}, у пользователя с id = {} такой же", updateUser.getEmail(), existedId);
-                        throw new DuplicateException(USER_DUPLICATE_EMAIL);
-                    }
-                });
+        final User sameEmailUser = userRepository.findByEmail(user.getEmail());
+        if (sameEmailUser != null && !sameEmailUser.getId().equals(id)) {
+            log.error("Нарушена уникальность email = {}, у пользователя с id = {} такой же", updateUser.getEmail(), sameEmailUser.getId());
+            throw new DuplicateException(USER_DUPLICATE_EMAIL);
+        }
 
-        user = UserMapper.mapUpdateUser(user, existedUser);
+        user = User.from(user, existedUser);
+        userRepository.save(user);
 
-        return userRepository.edit(user)
-                .map(UserMapper::mapToUserDto)
-                .orElseThrow();
+        return UserDto.from(user);
     }
 
     @Override
-    public void delete(long userId) {
-        get(userId);
-
-        userRepository.delete(userId);
+    public void delete(Long userId) {
+        getRawUser(userId);
+        userRepository.deleteById(userId);
     }
 }

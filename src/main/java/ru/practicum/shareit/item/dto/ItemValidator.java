@@ -24,7 +24,7 @@ public class ItemValidator {
             log.warn("Падение по валидации. Поле: available");
             throw new ValidationException(ITEM_AVAILABLE_ERROR);
         }
-        if (newItem.getOwnerId() == null) {
+        if (newItem.getOwner().getId() == null) {
             log.warn("Падение по валидации. Поле: userId");
             throw new ValidationException(ITEM_NO_USER);
         }
