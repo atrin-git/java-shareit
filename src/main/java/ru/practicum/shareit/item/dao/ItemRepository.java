@@ -1,55 +1,18 @@
 package ru.practicum.shareit.item.dao;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface ItemRepository {
-    /**
-     * Получение списка вещей пользователя
-     *
-     * @param userId Идентификатор пользователя
-     * @return Список вещей
-     */
-    List<Item> getAll(long userId);
+public interface ItemRepository extends JpaRepository<Item, Long> {
+    List<Item> findAllByOwnerId(Long ownerId);
 
-    /**
-     * Получение информации о конкретной вещи
-     *
-     * @param itemId Идентификатор вещи
-     * @return Данные о вещи
-     */
-    Optional<Item> get(long itemId);
-
-    /**
-     * Поиск
-     *
-     * @param searchString Строка для поиска
-     * @return Найденные вещи
-     */
+    @Query("SELECT i FROM Item i " +
+            "WHERE (LOWER(i.name) LIKE LOWER(CONCAT('%', :searchString, '%')) " +
+            "OR LOWER(i.description) LIKE LOWER(CONCAT('%', :searchString, '%'))) " +
+            "AND i.isAvailable = true")
     List<Item> search(String searchString);
-
-    /**
-     * Создание новой вещи
-     *
-     * @param item Данные о вещи
-     * @return Созданная вещь
-     */
-    Optional<Item> create(Item item);
-
-    /**
-     * Редактирование вещи
-     *
-     * @param item Данные для обновления
-     * @return Обновлённая вещь
-     */
-    Optional<Item> edit(Item item);
-
-    /**
-     * Удаление вещи
-     *
-     * @param itemId Идентификатор вещи
-     */
-    void delete(long itemId);
 }
+

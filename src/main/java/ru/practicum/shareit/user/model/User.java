@@ -1,21 +1,74 @@
 package ru.practicum.shareit.user.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserNewDto;
 
 @Data
+@Entity
+@Table(name = "users", schema = "public")
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
 public class User {
-    /**
-     * Идентификатор
-     */
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    /**
-     * Имя пользователя
-     */
+
+    @Column(nullable = false)
     private String name;
-    /**
-     * e-mail
-     */
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    public static User from(UserNewDto newUserDto) {
+        return User.builder()
+                .name(newUserDto.getName())
+                .email(newUserDto.getEmail())
+                .build();
+    }
+
+    public static User from(UserDto userDto) {
+        return User.builder()
+                .id(userDto.getId())
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .build();
+    }
+
+    public static User from(User user, User existedUser) {
+        return User.builder()
+                .id(existedUser.getId())
+                .email(
+                        (user.getEmail() != null && !user.getEmail().isEmpty())
+                                ? user.getEmail()
+                                : existedUser.getEmail()
+                )
+                .name(
+                        (user.getName() != null && !user.getName().isEmpty())
+                                ? user.getName()
+                                : existedUser.getName())
+                .build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
+        return id != null && id.equals(((User) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

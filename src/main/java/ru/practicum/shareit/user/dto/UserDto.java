@@ -1,21 +1,23 @@
 package ru.practicum.shareit.user.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import ru.practicum.shareit.user.model.User;
 
-@Data
+@Getter
+@Setter
 @Builder(toBuilder = true)
 public class UserDto {
-    /**
-     * Идентификатор
-     */
     private Long id;
-    /**
-     * Имя пользователя
-     */
     private String name;
-    /**
-     * e-mail
-     */
     private String email;
+
+    public static UserDto from(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
+    }
 }

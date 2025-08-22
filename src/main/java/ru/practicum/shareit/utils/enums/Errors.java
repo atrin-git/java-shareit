@@ -19,4 +19,18 @@ public class Errors {
     public static final String ITEM_NO_USER = "Поле userId заполнено некорректно";
     public static final String ITEM_OF_ANOTHER_USER = "Вещь принадлежит другому пользователю. Передан некорректный идентификатор пользователя";
 
+    public static final String BOOKING_NOT_FOUND = "Бронирование не найдено";
+    public static final String BOOKING_ITEM_UNAVAILABLE = "Вещь для бронирования не доступна";
+    public static final String BOOKING_OWNER_NOT_BOOKER = "Хозяин вещи не может оформить бронирование";
+    public static final String BOOKING_START_IS_NULL = "Дата начала бронирования не задана";
+    public static final String BOOKING_END_IS_NULL = "Дата окончания бронирования не задана";
+    public static final String BOOKING_START_IS_BEFORE_NOW = "Дата начала бронирования из прошлого";
+    public static final String BOOKING_END_IS_BEFORE_NOW = "Дата окончания бронирования из прошлого";
+    public static final String BOOKING_WRONG_RANGE = "Недопустимый диапазон дат";
+    public static final String BOOKING_USER_IS_NOT_OWNER = "Пользователь не является владельцем вещи";
+    public static final String BOOKING_USER_IS_NOT_OWNER_OR_BOOKER = "Пользователь не является владельцем вещи или бронирующим";
+    public static final String BOOKING_STATE_NOT_DEFINED = "Параметр state не определён";
+
+    public static final String COMMENT_NO_BOOKING = "Чтобы оставить комментарий необходимо завершённое бронирование";
+    public static final String COMMENT_FROM_OWNER = "Хозяин вещи не может оставить комментарий на свою вещь";
 }
