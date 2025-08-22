@@ -12,7 +12,7 @@ import static ru.practicum.shareit.utils.enums.Errors.*;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class BookingValidator {
+public final class BookingValidator {
     public static void checkBookingDates(Booking booking) {
         if (booking.getStart() == null) {
             log.warn("Падение по валидации. Поле: start is null");

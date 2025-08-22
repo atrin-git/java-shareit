@@ -10,7 +10,7 @@ import static ru.practicum.shareit.utils.enums.Errors.USER_EMAIL_ERROR;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserValidator {
+public final class UserValidator {
     public static void checkNewUser(User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
             errorEmail();

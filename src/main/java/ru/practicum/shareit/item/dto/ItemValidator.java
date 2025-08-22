@@ -10,7 +10,7 @@ import static ru.practicum.shareit.utils.enums.Errors.*;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ItemValidator {
+public final class ItemValidator {
     public static void checkNewItem(Item newItem) {
         if (newItem.getName() == null || newItem.getName().isEmpty()) {
             log.warn("Падение по валидации. Поле: name");

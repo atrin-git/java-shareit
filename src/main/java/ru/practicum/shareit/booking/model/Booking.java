@@ -1,7 +1,10 @@
 package ru.practicum.shareit.booking.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.BookingNewDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -9,14 +12,12 @@ import ru.practicum.shareit.user.model.User;
 import java.time.Instant;
 import java.time.ZoneOffset;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 @Table(name = "bookings", schema = "public")
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Booking {
 
     @Id
@@ -49,8 +50,12 @@ public class Booking {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Booking)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Booking)) {
+            return false;
+        }
         return id != null && id.equals(((Booking) o).getId());
     }
 

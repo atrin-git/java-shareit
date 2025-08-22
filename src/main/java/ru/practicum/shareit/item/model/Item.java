@@ -1,17 +1,18 @@
 package ru.practicum.shareit.item.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemNewDto;
 import ru.practicum.shareit.user.model.User;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 @Table(name = "items", schema = "public")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
 public class Item {
 
@@ -60,8 +61,12 @@ public class Item {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Item)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Item)) {
+            return false;
+        }
         return id != null && id.equals(((Item) o).getId());
     }
 
